@@ -1,37 +1,228 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Add Employee Information</title>
-</head>
-<center>
-	<font color="black" size="4" style="font-family: avenir">
+  <head>
+    <title>Add Employee Information</title>
+    <style>
+      body {
+        background-color: #f2f2f2;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
 
-		<h1 style="color: DodgerBlue">Employee Database</h1>
+      .container {
+        width: 400px;
+        margin: 0 auto;
+        padding: 50px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
 
-		<body bgcolor="lightgrey">
+      h1 {
+        color: #1a237e;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 30px;
+      }
 
-			<form action="/addemp" autocomplete="on" method = "POST" enctype="multipart/form-data">
+      .form-group {
+        margin-bottom: 20px;
+      }
 
-				<button type="submit" formaction="/getemp" style="background: grey; height: 45px; width: 200px; color:white; font:oblique;">GET EMPLOYEE INFORMATION</button><br><br>
+      .form-label {
+        display: block;
+        font-weight: bold;
+        color: #333333;
+        margin-bottom: 5px;
+      }
 
-		  		Employee ID:<br> <input style="height:25px;font-size:14pt; color:grey;" type="number" name="emp_id" autofocus size="40"><br><br>
+      .form-input {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #cccccc;
+        border-radius: 4px;
+        color: #555555;
+        font-weight: bold;
+      }
 
-		  		First Name:<br> <input style="height:25px;font-size:14pt;color:grey;" type="text" name="first_name" ><br><br>
+      .form-button {
+        background-color: #1a237e;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+      }
 
-		  		Last Name:<br> <input style="height:25px;font-size:14pt;color:grey;" type="text" name="last_name"><br><br>
+      .form-button:hover {
+        background-color: #0d1440;
+      }
 
-		  		Primary Skills:<br> <input style="height:25px;font-size:14pt;color:grey;" type="text" name="pri_skill"><br><br>
+      .link {
+        text-decoration: none;
+        color: #888888;
+        font-size: 14px;
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+      }
 
-		  		Location:<br> <input style="height:25px;font-size:14pt;color:grey;" type="text" name="location"><br><br>
+      .validation-message {
+        color: #d50000;
+        font-size: 12px;
+        margin-top: 5px;
+      }
 
-		  		Image: <input type=file name="emp_image_file" style="height:25px;font-size:14pt;color:grey;"> <br><br>
+      .form-combobox {
+        position: relative;
+      }
 
-		  		<button type="submit" style="background: grey; height: 45px; width: 200px; color: white; size: 5; font:oblique;">UPDATE DATABASE</button>
+      .form-combobox .select2-container--default .select2-selection--single {
+        height: 36px;
+        padding: 6px 38px 6px 12px;
+        border: 1px solid #cccccc;
+        border-radius: 4px;
+      }
 
-			</form>
-<a href="/about">About Us</a>
-		</body>
+      .form-combobox .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 24px;
+        right: 10px;
+      }
 
-	</font>
-</center>
+      .form-combobox .select2-container--default .select2-selection--single .select2-selection__rendered {
+        display: flex;
+        align-items: center;
+      }
+
+      .form-combobox .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        display: none;
+      }
+
+      .flag-icon {
+        margin-right: 6px;
+        width: 24px;
+        height: 18px;
+        background-size: contain;
+        background-position: 50%;
+        background-repeat: no-repeat;
+        display: inline-block;
+      }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $('.form-combobox select').select2({
+          templateResult: formatCountry
+        });
+      });
+
+	  function formatCountry(country) {
+		if (!country.id) {
+		  return country.text;
+		}
+	  
+		var $country = $(
+		  `<span><i class="flag-icon ${country.element.dataset.icon}"></i> ${country.text}</span>`
+		);
+	  
+		// Add the flag icon class to the <i> tag
+		$country.find("i").addClass(country.element.dataset.icon);
+	  
+		return $country;
+	  }
+
+      function validateForm() {
+        const fileInput = document.querySelector(
+          'input[name="emp_image_file"]'
+        );
+        const fileName = fileInput.value;
+        const validationMessage = document.querySelector(".validation-message");
+
+        if (fileName === "") {
+          validationMessage.textContent = "Please select an image file";
+          return false;
+        }
+
+        validationMessage.textContent = "";
+        return true;
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Employee Database</h1>
+      <form
+        action="/addemp"
+        autocomplete="on"
+        method="POST"
+        enctype="multipart/form-data"
+        onsubmit="return validateForm()"
+      >
+        <div class="form-group">
+          <label class="form-label" for="emp_id">Employee ID:</label>
+          <input
+            class="form-input"
+            type="number"
+            name="emp_id"
+            placeholder="Employee ID"
+            autofocus
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="first_name">First Name:</label>
+          <input
+            class="form-input"
+            type="text"
+            name="first_name"
+            placeholder="First Name"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="last_name">Last Name:</label>
+          <input
+            class="form-input"
+            type="text"
+            name="last_name"
+            placeholder="Last Name"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pri_skill">Primary Skills:</label>
+          <input
+            class="form-input"
+            type="text"
+            name="pri_skill"
+            placeholder="Primary Skills"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="country">Country:</label>
+          <div class="form-combobox">
+            <select class="form-input" name="country">
+				<option value="AF" data-icon="flag-icon flag-icon-af">Afghanistan</option>
+				<option value="AL" data-icon="flag-icon flag-icon-al">Albania</option>
+				<option value="US" data-icon="flag-icon flag-icon-us">United States</option>
+				<option value="IN" data-icon="flag-icon flag-icon-in">India</option>
+				<option value="EU" data-icon="flag-icon flag-icon-eu">European Union</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="emp_image_file">Image:</label>
+          <input class="form-input" type="file" name="emp_image_file" />
+          <p class="validation-message"></p>
+        </div>
+        <button class="form-button" type="submit">UPDATE DATABASE</button>
+      </form>
+      <a class="link" href="/about">About Us</a>
+    </div>
+  </body>
 </html>
